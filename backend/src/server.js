@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
+import userRoutes from "./routes/user.route.js";
 import { ENV } from "./config/env.js";
 import { connectDB } from "./config/db.js";
 
@@ -13,6 +14,8 @@ app.use(clerkMiddleware()); //handle authentication
 //connectDB();
 
 app.get("/", (req, res) => res.send("Hello from server!!!"));
+
+app.use("/api/users", userRoutes);
 
 // app.listen(ENV.PORT, () =>
 //   console.log("Server is up and running on PORT:", ENV.PORT)
