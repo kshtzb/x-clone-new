@@ -43,18 +43,22 @@ const startServer = async () => {
       console.log("Server running on port:", ENV.PORT)
     );
 
-    // if (ENV.NODE_ENV !== "production") {
-    //   app.listen(ENV.PORT, () =>
-    //     console.log("Server running on port:", ENV.PORT)
-    //   );
-    // }
+    if (ENV.NODE_ENV !== "production") {
+      app.listen(ENV.PORT, () =>
+        console.log("Server running on port:", ENV.PORT)
+      );
+    }
   } catch (err) {
     console.error("DB connection failed:", err.message);
     process.exit(1);
   }
 };
 
-startServer();
+//startServer();
+
+if (ENV.NODE_ENV !== "production") {
+  startServer();
+}
 
 // export for vercel
 export default app;
