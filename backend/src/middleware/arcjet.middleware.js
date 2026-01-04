@@ -4,7 +4,6 @@ import { aj } from "../config/arcjet.js";
 
 export const arcjetMiddleware = async (req, res, next) => {
   try {
-    //It checks whether the incoming request is allowed under the rate-limit /
     const decision = await aj.protect(req, {
       requested: 1, // each request consumes 1 token
     });
@@ -27,20 +26,21 @@ export const arcjetMiddleware = async (req, res, next) => {
           message: "Access denied by security policy.",
         });
       }
-      if (
-        decision.results.some(
-          (result) => result.reason.isBot() && result.reason.isSpoofed()
-        )
-      ) {
-        return res.status(403).json({
-          error: "Spoofed bot detected",
-          message: "Malicious bot activity detected.",
-        });
-      }
-      next();
     }
 
     // check for spoofed bots
+    if (
+      decision.results.some(
+        (result) => result.reason.isBot() && result.reason.isSpoofed()
+      )
+    ) {
+      return res.status(403).json({
+        error: "Spoofed bot detected",
+        message: "Malicious bot activity detected.",
+      });
+    }
+
+    next();
   } catch (error) {
     console.error("Arcjet middleware error:", error);
     // allow request to continue if Arcjet fails
