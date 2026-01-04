@@ -4,7 +4,6 @@ import Comment from "../models/comment.model.js";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import Notification from "../models/notification.model.js";
-import { use } from "react";
 
 export const getComments = asyncHandler(async (req, res) => {
   const { postId } = req.params;
@@ -22,7 +21,7 @@ export const createComment = asyncHandler(async (req, res) => {
   const { content } = req.body;
 
   if (!content || content.trim() === "") {
-    return res.status(400).json({ error: "User or post not found" });
+    return res.status(400).json({ error: "Comment content is required" });
   }
 
   const user = await User.findOne({ clerkId: userId });
@@ -63,8 +62,9 @@ export const deleteComment = asyncHandler(async (req, res) => {
   const user = await User.findOne({ clerkId: userId });
   const comment = await Comment.findById(commentId);
 
-  if (!user || !comment)
-    return res.status(404).json({ error: "User or post not found" });
+  if (!user || !comment) {
+    return res.status(404).json({ error: "User or comment not found" });
+  }
 
   if (comment.user.toString() !== user._id.toString()) {
     return res
