@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import { useAuth } from "@clerk/clerk-expo";
 
-const API_BASE_URL = "https://x-clone-new.vercel.app/api";
+const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL || "https://x-clone-new.vercel.app/api";
 
 // ⚠️ Note:
 // localhost will NOT work on a physical device
