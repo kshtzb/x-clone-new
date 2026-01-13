@@ -77,5 +77,21 @@ export const userApi = {
 // ------------------------------------------------------------
 
 export const postApi = {
-  // Creates a new post (text + optional image)
+  createPost: (
+    api: AxiosInstance,
+    data: { contenet: string; image?: string }
+  ) => api.post("/posts", data),
+
+  getPosts: (api: AxiosInstance) => api.get("/posts"),
+  getUserPosts: (api: AxiosInstance, username: string) =>
+    api.get(`/posts/user/${username}`),
+  likePost: (api: AxiosInstance, postId: string) =>
+    api.post(`/posts/${postId}/like`),
+  deletePost: (api: AxiosInstance, postId: string) =>
+    api.delete(`/posts/${postId}`),
+};
+
+export const commentApi = {
+  createComment: (api: AxiosInstance, postId: string, content: string) =>
+    api.post(`/comments/post/${postId}`, { content }),
 };
