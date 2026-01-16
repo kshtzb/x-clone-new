@@ -1,7 +1,9 @@
+import EditProfileModal from "@/components/EditProfileModal";
 import PostsList from "@/components/PostsList";
 import SignOutButton from "@/components/SignOutButton";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { usePosts } from "@/hooks/usePosts";
+import { useProfile } from "@/hooks/useProfile";
 import { Feather } from "@expo/vector-icons";
 import { format } from "date-fns";
 import {
@@ -28,6 +30,16 @@ const Profile = () => {
     isLoading: isRefetching,
   } = usePosts(currentUser?.username);
 
+  const {
+    isEditModalVisible,
+    openEditModal,
+    closeEditModals,
+    formData,
+    saveProfile,
+    updateFormField,
+    isUpdating,
+  } = useProfile();
+
   if (isLoading) {
     return (
       <View className="flex-1 bg-white items-center justify-center">
@@ -35,15 +47,21 @@ const Profile = () => {
       </View>
     );
   }
+  function refetchProfile() {
+    throw new Error("Function not implemented.");
+  }
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100">
         <View>
           <Text className="text-xl font-bold text-gray-900">
             {currentUser.firstName} {currentUser.lastName}
           </Text>
-          <Text className="text-gray-500 text-sm">{userPosts.length}Posts</Text>
+          <Text className="text-gray-500 text-sm">
+            {userPosts.length} Posts
+          </Text>
         </View>
         <SignOutButton />
       </View>
@@ -53,6 +71,16 @@ const Profile = () => {
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 100 + insets.bottom }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={() => {
+              //refetchProfile();
+              refetchPosts();
+            }}
+            tintColor={"#1DA1F2"}
+          />
+        }
       >
         <Image
           source={{
@@ -70,7 +98,10 @@ const Profile = () => {
               source={{ uri: currentUser.profilePicture }}
               className="w-32 h-32 rounded-full border-4 border-white"
             />
-            <TouchableOpacity className="border border-gray-300 px-6 py-2 rounded-full">
+            <TouchableOpacity
+              className="border border-gray-300 px-6 py-2 rounded-full"
+              onPress={openEditModal}
+            >
               <Text className="font-semibold text-gray-900">Edit Profile</Text>
             </TouchableOpacity>
           </View>
@@ -78,8 +109,7 @@ const Profile = () => {
           <View className="mb-4">
             <View className="flex-row items-center mb-1">
               <Text className="text-xl font-bold text-gray-900 mr-1">
-                {currentUser.firstName}
-                {currentUser.lastName}
+                {currentUser.firstName} {currentUser.lastName}
               </Text>
               <Feather name="check-circle" size={20} color="#1DA1F2" />
             </View>
@@ -121,6 +151,15 @@ const Profile = () => {
 
         <PostsList username={currentUser?.username} />
       </ScrollView>
+
+      <EditProfileModal
+        isVisible={isEditModalVisible}
+        onClose={closeEditModals}
+        formData={formData}
+        saveProfile={saveProfile}
+        updateFormField={updateFormField}
+        isUpdating={isUpdating}
+      />
     </SafeAreaView>
   );
 };
