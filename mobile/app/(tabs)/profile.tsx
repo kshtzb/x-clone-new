@@ -47,9 +47,6 @@ const Profile = () => {
       </View>
     );
   }
-  function refetchProfile() {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
